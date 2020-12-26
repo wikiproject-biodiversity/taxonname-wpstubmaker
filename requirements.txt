@@ -1,6 +1,5 @@
 jupyterlab
 voila
-wikidataintegrator
 copy
 json
 datetime
