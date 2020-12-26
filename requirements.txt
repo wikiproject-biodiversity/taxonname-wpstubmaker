@@ -1,5 +1,5 @@
 jupyterlab
-voila
+voila~=0.2.4
 copy
 json
 datetime
