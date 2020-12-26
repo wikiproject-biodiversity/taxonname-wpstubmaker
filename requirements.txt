@@ -3,8 +3,8 @@ voila
 wikidataintegrator
 ipywidgets
 IPython
-bs4
 copy
+beautifulsoup4
 requests
 json
 datetime
