@@ -1,0 +1,11 @@
+jupyterlab
+voila
+wikidataintegrator
+ipywidgets
+IPython
+bs4
+copy
+requests
+json
+datetime
+

@@ -1,0 +1,2 @@
+WDUSER = ""
+WDPASS = ""
