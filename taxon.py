@@ -161,15 +161,15 @@ class external_data(object):
                         pages = source["pages"]
                     else: pages = ""
                     if "volume" in source.keys():
-                        pages = source["volume"]
-                    else: pages = ""
+                        volume = source["volume"]
+                    else: volume = ""
 
                     recommend_reading += """\n* {{{{cite book|url={url} 
 |publisher={publisher}
 |page={page}
 |year={year}
 |title={title}
-|volume={volume}}}}}""".format(url=source["url"], publisher=source["publisher"],page=pages,year=source["year"], title=source["title"], volume=source["volume"])
+|volume={volume}}}}}""".format(url=source["url"], publisher=source["publisher"],page=pages,year=source["year"], title=source["title"], volume=volume)
             recommend_reading += "\n{{refend}}"
                                                        
 
