@@ -5,6 +5,7 @@ import requests
 import json
 import local
 from datetime import datetime
+import bibtexparser
 
 class external_data(object):
     def __init__(self, inaturalist_id):
@@ -18,6 +19,7 @@ class external_data(object):
         self.gbif_id = self.wikidata["main_rank"]["gBifTaxonId"].loc[0]
         self.gbif_data = self.fetch_gbif(self.gbif_id)
         self.gbif_parent_data = self.fetch_gbif(self.gbif_data["parentKey"])
+        self.bhl_references = self.fetch_bhl().entries
         if self.gbif_data["parent"] == self.inaturalist_parent_data[0]["name"]:
             self.parent_gbif_qid = self.parent_inat_qid
         else:
@@ -73,7 +75,6 @@ class external_data(object):
                                             schema:isPartOf <https://commons.wikimedia.org/> .}
                         OPTIONAL {?parent_taxon wdt:P846 ?gBifTaxonId .}}
                         """
-
         results = dict()
         results["main_rank"] = wdi_core.WDFunctionsEngine.execute_sparql_query(query, as_dataframe=True)
         results["parent_rank"] = wdi_core.WDFunctionsEngine.execute_sparql_query(parent_query, as_dataframe=True)
@@ -132,6 +133,12 @@ class external_data(object):
         # return item.get_wd_json_representation()
         return item.write(self.login)
 
+    def fetch_bhl(self):
+        bhlbibtexurl = "https://www.biodiversitylibrary.org/namelistdownload/?type=b&name=" + self.inaturalist_data[0][
+            "name"].replace(" ", "_")
+        bibtex = requests.get(bhlbibtexurl).text
+        return bibtexparser.loads(bibtex)
+
     def create_wikipedia_stub(self, infobox_image):
         inaturalist = self.inaturalist_data[0]
         inaturalist_parent = self.inaturalist_parent_data[0]
@@ -144,6 +151,24 @@ class external_data(object):
         else:
             exordium = "'''''{0}'''''".format(inaturalist["name"])
 
+        ## recommended reading
+        if len(self.bhl_references)>0:
+            recommend_reading = """== Sources ==
+        {{refbegin | 33em}}"""
+            for source in self.bhl_references:
+                if source["ENTRYTYPE"]=="book":
+                    recommend_reading += """\n* {{{{cite book|url={url} 
+|publisher={publisher}
+|page={page}
+|year={year}
+|title={title}
+|volume={volume}}}}}""".format(url=source["url"], publisher=source["publisher"],page=source["pages"],year=source["year"], title=source["title"], volume=source["volume"])
+            recommend_reading += "\n{{refend}}"
+                                                       
+
+
+
+
         en_wikipedia_article = """{{{{Speciesbox 
 | image = {0}
 | parent = {1}
@@ -155,11 +180,14 @@ class external_data(object):
 
 ==References==
 {{{{Reflist}}}}
+{recommended_reading}
+
+
 {{{{Commons}}}}
 {{{{Taxonbar|from={7}}}}}
 {{{{stub}}}}""".format(infobox_image, inaturalist_parent["name"], inaturalist["name"], inaturalist["rank"],
                    inaturalist_parent["rank"], inaturalist["id"], inaturalist["name"].replace(" ", "-"),
-                   inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"))
+                   inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"), recommended_reading=recommend_reading)
 
         return en_wikipedia_article
 
