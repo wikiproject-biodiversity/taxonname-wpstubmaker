@@ -157,12 +157,15 @@ class external_data(object):
         {{refbegin | 33em}}"""
             for source in self.bhl_references:
                 if source["ENTRYTYPE"]=="book":
+                    if "pages" in source.keys():
+                        pages = source["pages"]
+                    else: pages = ""
                     recommend_reading += """\n* {{{{cite book|url={url} 
 |publisher={publisher}
 |page={page}
 |year={year}
 |title={title}
-|volume={volume}}}}}""".format(url=source["url"], publisher=source["publisher"],page=source["pages"],year=source["year"], title=source["title"], volume=source["volume"])
+|volume={volume}}}}}""".format(url=source["url"], publisher=source["publisher"],page=pages,year=source["year"], title=source["title"], volume=source["volume"])
             recommend_reading += "\n{{refend}}"
                                                        
 
