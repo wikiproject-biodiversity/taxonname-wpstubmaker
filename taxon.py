@@ -160,6 +160,10 @@ class external_data(object):
                     if "pages" in source.keys():
                         pages = source["pages"]
                     else: pages = ""
+                    if "volume" in source.keys():
+                        pages = source["volume"]
+                    else: pages = ""
+
                     recommend_reading += """\n* {{{{cite book|url={url} 
 |publisher={publisher}
 |page={page}
