@@ -6,6 +6,7 @@ import json
 import local
 from datetime import datetime
 import bibtexparser
+from IPython.display import Image, HTML
 
 class external_data(object):
     def __init__(self, inaturalist_id):
