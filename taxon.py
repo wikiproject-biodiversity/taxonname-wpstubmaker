@@ -40,8 +40,9 @@ class external_data(object):
         soup = bs4.BeautifulSoup(html, features="html.parser")
         for cd in soup.findAll(text=True):
             if  "CDATA" in cd:
-                datatext = cd.split("\"results\":")[1].split("}.results")[0].replace("false", "False").replace("true", "True").replace("null", "None")
-                return eval(datatext)
+                datatext = cd.split("\"results\":")
+                if len(datatext) > 1:
+                    return eval(datatext[1].split("}.results")[0].replace("false", "False").replace("true", "True").replace("null", "None"))
 
     @staticmethod
     def fetch_gbif(id):
