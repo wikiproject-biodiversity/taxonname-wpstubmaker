@@ -1,4 +1,4 @@
-math
+maths
 jupyterlab
 voila
 bs4~=0.0.1
