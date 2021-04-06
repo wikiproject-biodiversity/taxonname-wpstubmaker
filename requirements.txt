@@ -7,4 +7,3 @@ wikidataintegrator~=0.8.0
 ipywidgets~=7.5.1
 ipython~=7.11.1
 bibtexparser~=1.2.0
-math
