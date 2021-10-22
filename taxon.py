@@ -173,10 +173,6 @@ class external_data(object):
 |title={title}
 |volume={volume}}}}}""".format(url=source["url"], publisher=source["publisher"],page=pages,year=source["year"], title=source["title"], volume=volume)
             recommend_reading += "\n{{refend}}"
-                                                       
-
-
-
 
         en_wikipedia_article = """{{{{Speciesbox 
 | image = {0}
@@ -189,8 +185,6 @@ class external_data(object):
 
 ==References==
 {{{{Reflist}}}}
-{recommended_reading}
-
 
 {{{{Commons}}}}
 {{{{Taxonbar|from={7}}}}}
