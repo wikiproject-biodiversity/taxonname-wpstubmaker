@@ -190,8 +190,8 @@ class external_data(object):
 {{{{Taxonbar|from={7}}}}}
 {{{{stub}}}}""".format(infobox_image, inaturalist_parent["name"], inaturalist["name"], inaturalist["rank"],
                    inaturalist_parent["rank"], inaturalist["id"], inaturalist["name"].replace(" ", "-"),
-                   inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"), recommended_reading=recommend_reading)
-
+                   inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"))
+                   
         return en_wikipedia_article
 
 
