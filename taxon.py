@@ -147,6 +147,11 @@ class external_data(object):
         inaturalist_qid = self.qid.loc[0]
         gbifdata = self.gbif_data
 
+        if "publishedIn" in gbifdata:
+            publishedIn = "<ref>"+gbifdata["publishedIn"]+"</ref>"
+        else:
+            publishedIn = ""
+
         if 'preferred_common_name' in inaturalist.keys():
             exordium = "'''''{0}''''', also known by its common name '''{1}'''".format(inaturalist["name"], inaturalist[
                 'preferred_common_name'])
@@ -181,7 +186,7 @@ class external_data(object):
 | authority = {9}
 }}}}
 
-{8} is a [[{3}]] from the [[{4}]] [[{1}]] <ref name="inaturalist-{2}">{{{{cite web |title={2} |url=https://www.inaturalist.org/taxa/{5}-{6} |website=iNaturalist |access-date={10} |language=en}}}}</ref>. 
+{8} is a [[{3}]] from the [[{4}]] ''[[{1}]]''. {11}<ref name="inaturalist-{2}">{{{{cite web |title={2} |url=https://www.inaturalist.org/taxa/{5}-{6} |website=iNaturalist |access-date={10} |language=en}}}}</ref> The species was first described in {12}.  
 
 ==References==
 {{{{Reflist}}}}
@@ -190,7 +195,7 @@ class external_data(object):
 {{{{Taxonbar|from={7}}}}}
 {{{{stub}}}}""".format(infobox_image, inaturalist_parent["name"], inaturalist["name"], inaturalist["rank"],
                    inaturalist_parent["rank"], inaturalist["id"], inaturalist["name"].replace(" ", "-"),
-                   inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"))
+                   inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"), publishedIn, source["year"])
         return en_wikipedia_article
 
 
