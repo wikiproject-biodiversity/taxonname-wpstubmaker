@@ -3,7 +3,7 @@ import copy
 import bs4
 import requests
 import json
-import local
+import os
 from datetime import datetime
 import bibtexparser
 from IPython.display import Image, HTML
@@ -142,61 +142,80 @@ class external_data(object):
         return bibtexparser.loads(bibtex)
 
     def create_wikipedia_stub(self, infobox_image):
+        wikipedia = os.environ["wikipedia"]
         inaturalist = self.inaturalist_data[0]
         inaturalist_parent = self.inaturalist_parent_data[0]
         inaturalist_qid = self.qid.loc[0]
         gbifdata = self.gbif_data
 
-        if "publishedIn" in gbifdata:
-            publishedIn = "<ref>"+gbifdata["publishedIn"]+"</ref>"
-        else:
-            publishedIn = ""
+        if wikipedia == "https://dag.wikipedia.org/":
+            wikipedia_article = f"""
+            {{Databox}}
+            '''{inaturalist["name"]}'''
+            {{stub}}
+            """
+            return wikipedia_article
 
-        if 'preferred_common_name' in inaturalist.keys():
-            exordium = "'''''{0}''''', also known by its common name '''{1}'''".format(inaturalist["name"], inaturalist[
-                'preferred_common_name'])
-        else:
-            exordium = "'''''{0}'''''".format(inaturalist["name"])
+        if wikipedia == "https://ig.wikipedia.org/":
+            wikipedia_article = f"""
+{{Databox}}
+'''{inaturalist["name"]}'''
+{{stub}}
+            """
+            return wikipedia_article
 
-        ## recommended reading
-        if len(self.bhl_references)>0:
-            recommend_reading = """== Sources ==
-        {{refbegin | 33em}}"""
-            for source in self.bhl_references:
-                if source["ENTRYTYPE"]=="book":
-                    if "pages" in source.keys():
-                        pages = source["pages"]
-                    else: pages = ""
-                    if "volume" in source.keys():
-                        volume = source["volume"]
-                    else: volume = ""
+        if wikipedia == "https://en.wikipedia.org/":
+            if "publishedIn" in gbifdata:
+                publishedIn = "<ref>"+gbifdata["publishedIn"]+"</ref>"
+            else:
+                publishedIn = ""
 
-                    recommend_reading += """\n* {{{{cite book|url={url} 
-|publisher={publisher}
-|page={page}
-|year={year}
-|title={title}
-|volume={volume}}}}}""".format(url=source["url"], publisher=source["publisher"],page=pages,year=source["year"], title=source["title"], volume=volume)
-            recommend_reading += "\n{{refend}}"
+            if 'preferred_common_name' in inaturalist.keys():
+                exordium = "'''''{0}''''', also known by its common name '''{1}'''".format(inaturalist["name"], inaturalist[
+                    'preferred_common_name'])
+            else:
+                exordium = "'''''{0}'''''".format(inaturalist["name"])
 
-        en_wikipedia_article = """{{{{Speciesbox 
-| image = {0}
-| parent = {1}
-| taxon = {2}
-| authority = {9}
-}}}}
+            ## recommended reading
+            if len(self.bhl_references)>0:
+                recommend_reading = """== Sources ==
+            {{refbegin | 33em}}"""
+                for source in self.bhl_references:
+                    if source["ENTRYTYPE"]=="book":
+                        if "pages" in source.keys():
+                            pages = source["pages"]
+                        else: pages = ""
+                        if "volume" in source.keys():
+                            volume = source["volume"]
+                        else: volume = ""
 
-{8} is a [[{3}]] from the [[{4}]] ''[[{1}]]''. {11}<ref name="inaturalist-{2}">{{{{cite web |title={2} |url=https://www.inaturalist.org/taxa/{5}-{6} |website=iNaturalist |access-date={10} |language=en}}}}</ref> The species was first described in {12}.  
+                        recommend_reading += """\n* {{{{cite book|url={url} 
+    |publisher={publisher}
+    |page={page}
+    |year={year}
+    |title={title}
+    |volume={volume}}}}}""".format(url=source["url"], publisher=source["publisher"],page=pages,year=source["year"], title=source["title"], volume=volume)
+                recommend_reading += "\n{{refend}}"
 
-==References==
-{{{{Reflist}}}}
+            en_wikipedia_article = """{{{{Speciesbox 
+    | image = {0}
+    | parent = {1}
+    | taxon = {2}
+    | authority = {9}
+    }}}}
+    
+    {8} is a [[{3}]] from the [[{4}]] ''[[{1}]]''. {11}<ref name="inaturalist-{2}">{{{{cite web |title={2} |url=https://www.inaturalist.org/taxa/{5}-{6} |website=iNaturalist |access-date={10} |language=en}}}}</ref> The species was first described in {12}.  
+    
+    ==References==
+    {{{{Reflist}}}}
+    
+    {{{{Commons}}}}
+    {{{{Taxonbar|from={7}}}}}
+    {{{{stub}}}}""".format(infobox_image, inaturalist_parent["name"], inaturalist["name"], inaturalist["rank"],
+                       inaturalist_parent["rank"], inaturalist["id"], inaturalist["name"].replace(" ", "-"),
+                       inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"), publishedIn, source["year"])
 
-{{{{Commons}}}}
-{{{{Taxonbar|from={7}}}}}
-{{{{stub}}}}""".format(infobox_image, inaturalist_parent["name"], inaturalist["name"], inaturalist["rank"],
-                   inaturalist_parent["rank"], inaturalist["id"], inaturalist["name"].replace(" ", "-"),
-                   inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"), publishedIn, source["year"])
-        return en_wikipedia_article
+            return en_wikipedia_article
 
 
 
