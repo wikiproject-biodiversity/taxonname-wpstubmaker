@@ -176,27 +176,6 @@ class external_data(object):
             else:
                 exordium = "'''''{0}'''''".format(inaturalist["name"])
 
-            ## recommended reading
-            if len(self.bhl_references)>0:
-                recommend_reading = """== Sources ==
-            {{refbegin | 33em}}"""
-                for source in self.bhl_references:
-                    if source["ENTRYTYPE"]=="book":
-                        if "pages" in source.keys():
-                            pages = source["pages"]
-                        else: pages = ""
-                        if "volume" in source.keys():
-                            volume = source["volume"]
-                        else: volume = ""
-
-                        recommend_reading += """\n* {{{{cite book|url={url} 
-    |publisher={publisher}
-    |page={page}
-    |year={year}
-    |title={title}
-    |volume={volume}}}}}""".format(url=source["url"], publisher=source["publisher"],page=pages,year=source["year"], title=source["title"], volume=volume)
-                recommend_reading += "\n{{refend}}"
-
             en_wikipedia_article = """{{{{Speciesbox 
     | image = {0}
     | parent = {1}
@@ -204,7 +183,7 @@ class external_data(object):
     | authority = {9}
     }}}}
     
-    {8} is a [[{3}]] from the [[{4}]] ''[[{1}]]''. {11}<ref name="inaturalist-{2}">{{{{cite web |title={2} |url=https://www.inaturalist.org/taxa/{5}-{6} |website=iNaturalist |access-date={10} |language=en}}}}</ref> The species was first described in {12}.  
+    {8} is a [[{3}]] from the [[{4}]] ''[[{1}]]''. {11}<ref name="inaturalist-{2}">{{{{cite web |title={2} |url=https://www.inaturalist.org/taxa/{5}-{6} |website=iNaturalist |access-date={10} |language=en}}}}</ref>.  
     
     ==References==
     {{{{Reflist}}}}
@@ -213,7 +192,7 @@ class external_data(object):
     {{{{Taxonbar|from={7}}}}}
     {{{{stub}}}}""".format(infobox_image, inaturalist_parent["name"], inaturalist["name"], inaturalist["rank"],
                        inaturalist_parent["rank"], inaturalist["id"], inaturalist["name"].replace(" ", "-"),
-                       inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"), publishedIn, source["year"])
+                       inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"), publishedIn)
 
             return en_wikipedia_article
 
