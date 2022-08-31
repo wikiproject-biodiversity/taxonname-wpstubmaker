@@ -146,14 +146,45 @@ class external_data(object):
         inaturalist = self.inaturalist_data[0]
         inaturalist_parent = self.inaturalist_parent_data[0]
         inaturalist_qid = self.qid.loc[0]
-        gbifdata = self.gbif_data
+
+
 
         if wikipedia == "https://dag.wikipedia.org/":
+            if "publishedIn" in self.gbif_data:
+                publishedIn = "<ref>"+self.gbif_data["publishedIn"]+"</ref>"
+            else:
+                publishedIn = ""
+            bhlbibtexurl = "https://www.biodiversitylibrary.org/namelistdownload/?type=b&name=" + \
+                           self.inaturalist_data[0][
+                               "name"].replace(" ", "_")
+
+            ## recommended reading
+
+            if len(self.bhl_references) > 0:
+                recommended_reading = f"""== Karima n pahi ==
+* [{bhlbibtexurl} Biodiversity heritage library]
+                """
             wikipedia_article = f"""
-            {{Databox}}
-            '''{inaturalist["name"]}'''
-            {{stub}}
-            """
+{{{{Databox}}}}
+{{{{E-Class}}}}
+'''{inaturalist["name"]}''' nyɛla tia bee filaawasi balishɛli. {publishedIn}
+<ref name="gbif-{self.gbif_data["scientificName"]}">{{{{cite web |title={self.gbif_data["scientificName"]} (gbif) |url=https://www.gbif.org/species/{self.gbif_data["key"]} |website=GBIF |access-date={self.now.strftime("%Y-%m-%d")} |language=en}}}}</ref>
+<ref name="inaturalist-{inaturalist["name"]}">{{{{cite web |title={inaturalist["name"]} |url=https://www.inaturalist.org/taxa/{inaturalist["id"]}-{inaturalist["name"].replace(" ", "-")} |website=iNaturalist |access-date={self.now.strftime("%Y-%m-%d")} |language=en}}}}</ref>
+== Di Balibu ==
+
+== Di Anfaani ==
+
+{recommended_reading}
+
+== Kundivihira ==
+{{{{Reflist}}}}
+
+{{{{stub}}}}
+
+[[Pubu:Lahabaya zaa]]
+[[Pubu:Tihi]]
+[[Pubu:Tia]]
+"""
             return wikipedia_article
 
         if wikipedia == "https://ig.wikipedia.org/":
@@ -165,8 +196,8 @@ class external_data(object):
             return wikipedia_article
 
         if wikipedia == "https://en.wikipedia.org/":
-            if "publishedIn" in gbifdata:
-                publishedIn = "<ref>"+gbifdata["publishedIn"]+"</ref>"
+            if "publishedIn" in self.gbif_data:
+                publishedIn = "<ref>"+self.gbif_data["publishedIn"]+"</ref>"
             else:
                 publishedIn = ""
 
@@ -177,22 +208,22 @@ class external_data(object):
                 exordium = "'''''{0}'''''".format(inaturalist["name"])
 
             en_wikipedia_article = """{{{{Speciesbox 
-    | image = {0}
-    | parent = {1}
-    | taxon = {2}
-    | authority = {9}
-    }}}}
+| image = {0}
+| parent = {1}
+| taxon = {2}
+| authority = {9}
+}}}}
     
-    {8} is a [[{3}]] from the [[{4}]] ''[[{1}]]''. {11}<ref name="inaturalist-{2}">{{{{cite web |title={2} |url=https://www.inaturalist.org/taxa/{5}-{6} |website=iNaturalist |access-date={10} |language=en}}}}</ref>.  
+{8} is a [[{3}]] from the [[{4}]] ''[[{1}]]''. {11}<ref name="inaturalist-{2}">{{{{cite web |title={2} |url=https://www.inaturalist.org/taxa/{5}-{6} |website=iNaturalist |access-date={10} |language=en}}}}</ref>.  
     
-    ==References==
-    {{{{Reflist}}}}
+==References==
+{{{{Reflist}}}}
     
-    {{{{Commons}}}}
-    {{{{Taxonbar|from={7}}}}}
-    {{{{stub}}}}""".format(infobox_image, inaturalist_parent["name"], inaturalist["name"], inaturalist["rank"],
+{{{{Commons}}}}
+{{{{Taxonbar|from={7}}}}}
+{{{{stub}}}}""".format(infobox_image, inaturalist_parent["name"], inaturalist["name"], inaturalist["rank"],
                        inaturalist_parent["rank"], inaturalist["id"], inaturalist["name"].replace(" ", "-"),
-                       inaturalist_qid, exordium, gbifdata["authorship"], self.now.strftime("%Y-%m-%d"), publishedIn)
+                       inaturalist_qid, exordium, self.gbif_data["authorship"], self.now.strftime("%Y-%m-%d"), publishedIn)
 
             return en_wikipedia_article
 
