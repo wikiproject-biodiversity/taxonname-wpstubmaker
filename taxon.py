@@ -60,6 +60,7 @@ class external_data(object):
                   OPTIONAL {?taxon wdt:P3151 '"""
         query += str(self.inaturalist_data[0]["id"])
         query += """', ?inatTaxonId .} 
+                FILTER NOT EXIST {?taxon wdt:P105 wd:Q68947 .}
                 OPTIONAL {  ?commons schema:about ?taxon ;
                                     schema:isPartOf <https://commons.wikimedia.org/> .}
                 OPTIONAL {?taxon wdt:P846 ?gBifTaxonId .}}
