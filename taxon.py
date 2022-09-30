@@ -60,7 +60,7 @@ class external_data(object):
                   OPTIONAL {?taxon wdt:P3151 '"""
         query += str(self.inaturalist_data[0]["id"])
         query += """', ?inatTaxonId .} 
-                FILTER NOT EXIST {?taxon wdt:P105 wd:Q68947 .}
+                FILTER NOT EXISTS {?taxon wdt:P105 wd:Q68947 .}
                 OPTIONAL {  ?commons schema:about ?taxon ;
                                     schema:isPartOf <https://commons.wikimedia.org/> .}
                 OPTIONAL {?taxon wdt:P846 ?gBifTaxonId .}}
@@ -151,6 +151,7 @@ class external_data(object):
 
 
         if wikipedia == "https://dag.wikipedia.org/":
+            ## TODO introduce different stubs based on order in iNaturalist e.g. different for fish, plants, insects, ets
             if "publishedIn" in self.gbif_data:
                 publishedIn = "<ref>"+self.gbif_data["publishedIn"]+"</ref>"
             else:
@@ -190,9 +191,9 @@ class external_data(object):
 
         if wikipedia == "https://ig.wikipedia.org/":
             wikipedia_article = f"""
-{{Databox}}
+{{{{Databox}}}}
 '''{inaturalist["name"]}'''
-{{stub}}
+{{{{stub}}}}
             """
             return wikipedia_article
 
